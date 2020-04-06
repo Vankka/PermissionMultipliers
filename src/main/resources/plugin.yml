@@ -1,0 +1,11 @@
+name: XPPermissions
+version: @version@
+main: dev.vankka.xpmultipliers.XPMultipliers
+api-version: "1.13"
+authors: [Vankka]
+description: XP Multipliers through commands
+
+commands:
+  xpmultipliers:
+    permission: xpmultipliers.reload
+    usage: /<command> reload

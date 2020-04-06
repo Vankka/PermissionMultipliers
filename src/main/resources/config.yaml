@@ -1,0 +1,9 @@
+##################
+# XP Permissions #
+##################
+
+Multipliers:
+  ex:
+    Multiplier: 1.5
+    Permission: xpmultiplier.1.5
+    Priority: 10
