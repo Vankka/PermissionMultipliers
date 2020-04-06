@@ -99,7 +99,7 @@ public final class PermissionMultipliers extends JavaPlugin {
             configuration = YamlConfiguration.loadConfiguration(configurationFile);
 
             xpMultipliers.clear();
-            ConfigurationSection xpConfigurationSection = configuration.getConfigurationSection("Multipliers");
+            ConfigurationSection xpConfigurationSection = configuration.getConfigurationSection("XPMultipliers");
             for (String key : xpConfigurationSection.getKeys(false)) {
                 ConfigurationSection section = xpConfigurationSection.getConfigurationSection(key);
 
@@ -107,7 +107,7 @@ public final class PermissionMultipliers extends JavaPlugin {
             }
 
             superMobCoinMultipliers.clear();
-            ConfigurationSection superMobCoinConfigurationSection = configuration.getConfigurationSection("Multipliers");
+            ConfigurationSection superMobCoinConfigurationSection = configuration.getConfigurationSection("SuperMobCoinMultipliers");
             for (String key : superMobCoinConfigurationSection.getKeys(false)) {
                 ConfigurationSection section = superMobCoinConfigurationSection.getConfigurationSection(key);
 
