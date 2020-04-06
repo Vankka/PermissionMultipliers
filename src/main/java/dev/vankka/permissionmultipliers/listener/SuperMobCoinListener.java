@@ -79,9 +79,9 @@ public class SuperMobCoinListener implements Listener {
             return;
         }
 
-        int xp = event.getAmount();
-        int newXp = (int) Math.min(Math.round(xp * multiplier), Integer.MAX_VALUE);
-        event.getProfile().setMobCoins(newXp);
+        int coins = event.getAmount();
+        int newCoins = (int) Math.min(Math.round(coins * multiplier), Integer.MAX_VALUE);
+        event.setAmount(newCoins);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
