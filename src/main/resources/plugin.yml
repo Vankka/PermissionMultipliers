@@ -1,11 +1,12 @@
-name: XPPermissions
+name: PermissionMultipliers
 version: @version@
-main: dev.vankka.xpmultipliers.XPMultipliers
+main: dev.vankka.permissionmultipliers.PermissionMultipliers
 api-version: "1.13"
 authors: [Vankka]
-description: XP Multipliers through commands
+description: Multipliers through permissions
+softdepend: [SuperMobCoins]
 
 commands:
   xpmultipliers:
-    permission: xpmultipliers.reload
+    permission: permissionmultipliers.reload
     usage: /<command> reload

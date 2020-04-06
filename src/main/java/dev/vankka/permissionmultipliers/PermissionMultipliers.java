@@ -1,31 +1,29 @@
-package dev.vankka.xpmultipliers;
+package dev.vankka.permissionmultipliers;
 
+import dev.vankka.permissionmultipliers.listener.SuperMobCoinListener;
+import dev.vankka.permissionmultipliers.listener.XPListener;
+import dev.vankka.permissionmultipliers.multiplier.Multiplier;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.ExperienceOrb;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
-import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class XPMultipliers extends JavaPlugin implements Listener {
+public final class PermissionMultipliers extends JavaPlugin {
 
-    private List<XPMultiplier> multipliers = new ArrayList<>();
+    private List<Multiplier> xpMultipliers = new ArrayList<>();
+    private List<Multiplier> superMobCoinMultipliers = new ArrayList<>();
     private YamlConfiguration configuration;
-    private Map<UUID, Double> activeMultipliers = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -34,50 +32,20 @@ public final class XPMultipliers extends JavaPlugin implements Listener {
             return;
         }
 
-        getServer().getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(new XPListener(this), this);
+        if (getServer().getPluginManager().isPluginEnabled("SuperMobCoins")) {
+            getServer().getPluginManager().registerEvents(new SuperMobCoinListener(this), this);
+        }
 
         PluginCommand pluginCommand = getCommand("xpmultipliers");
         pluginCommand.setExecutor(this);
         pluginCommand.setTabCompleter(this);
-
-        getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
-            for (Player onlinePlayer : getServer().getOnlinePlayers()) {
-                XPMultiplier multiplier = null;
-                for (XPMultiplier current : multipliers) {
-                    if (multiplier != null && multiplier.getPriority() >= current.getPriority()) {
-                        continue;
-                    }
-
-                    if (onlinePlayer.hasPermission(current.getPermission())) {
-                        multiplier = current;
-                    }
-                }
-                if (multiplier != null) {
-                    activeMultipliers.put(onlinePlayer.getUniqueId(), multiplier.getMultiplier());
-                } else {
-                    activeMultipliers.remove(onlinePlayer.getUniqueId());
-                }
-            }
-        }, 40L, 40L);
     }
 
     @Override
     public void onDisable() {
-        multipliers.clear();
+        xpMultipliers.clear();
         configuration = null;
-    }
-
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onExpPickup(PlayerExpChangeEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        double multiplier = activeMultipliers.getOrDefault(uuid, -1.0);
-        if (multiplier < 0) {
-            return;
-        }
-
-        int xp = event.getAmount();
-        int newXp = (int) Math.min(Math.round(xp * multiplier), Integer.MAX_VALUE);
-        event.setAmount(newXp);
     }
 
     @Override
@@ -104,6 +72,11 @@ public final class XPMultipliers extends JavaPlugin implements Listener {
         }
     }
 
+    @Override
+    public YamlConfiguration getConfig() {
+        return configuration;
+    }
+
     private boolean reloadConfiguration() {
         try {
             if (!getDataFolder().exists()) {
@@ -125,12 +98,20 @@ public final class XPMultipliers extends JavaPlugin implements Listener {
 
             configuration = YamlConfiguration.loadConfiguration(configurationFile);
 
-            multipliers.clear();
-            ConfigurationSection configurationSection = configuration.getConfigurationSection("Multipliers");
-            for (String key : configurationSection.getKeys(false)) {
-                ConfigurationSection section = configurationSection.getConfigurationSection(key);
+            xpMultipliers.clear();
+            ConfigurationSection xpConfigurationSection = configuration.getConfigurationSection("Multipliers");
+            for (String key : xpConfigurationSection.getKeys(false)) {
+                ConfigurationSection section = xpConfigurationSection.getConfigurationSection(key);
 
-                multipliers.add(new XPMultiplier(section.getDouble("Multiplier"), section.getString("Permission"), section.getInt("Priority")));
+                xpMultipliers.add(new Multiplier(section.getDouble("Multiplier"), section.getString("Permission")));
+            }
+
+            superMobCoinMultipliers.clear();
+            ConfigurationSection superMobCoinConfigurationSection = configuration.getConfigurationSection("Multipliers");
+            for (String key : superMobCoinConfigurationSection.getKeys(false)) {
+                ConfigurationSection section = superMobCoinConfigurationSection.getConfigurationSection(key);
+
+                superMobCoinMultipliers.add(new Multiplier(section.getDouble("Multiplier"), section.getString("Permission")));
             }
             return true;
         } catch (IOException e) {
@@ -138,5 +119,13 @@ public final class XPMultipliers extends JavaPlugin implements Listener {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<Multiplier> getXpMultipliers() {
+        return xpMultipliers;
+    }
+
+    public List<Multiplier> getSuperMobCoinMultipliers() {
+        return superMobCoinMultipliers;
     }
 }

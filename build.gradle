@@ -1,3 +1,6 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+import java.nio.file.Files
+
 apply plugin: 'java'
 
 group = 'dev.vankka'
@@ -15,11 +18,42 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
     compileOnly 'org.bukkit:bukkit:1.13-R0.1-SNAPSHOT'
-}
 
-import org.apache.tools.ant.filters.ReplaceTokens
+    File cache = new File(".cache");
+    if (!cache.exists()) {
+        Files.createDirectory(cache.toPath())
+    }
+
+    File file = new File(cache, "supermobcoins.jar")
+    if (!file.exists()) {
+        URL url = new URL('https://github.com/superservic/supermobcoins-api/releases/download/1.1/mobcoins-api-1.1-SNAPSHOT.jar')
+        URLConnection connection = url.openConnection()
+        InputStream inputStream
+        try {
+            inputStream = connection.getInputStream()
+            OutputStream outputStream
+            try {
+                outputStream = new FileOutputStream(file)
+                int bit;
+
+                while ((bit = inputStream.read()) != -1) {
+                    outputStream.write(bit)
+                }
+            } finally {
+                if (outputStream != null) {
+                    outputStream.close()
+                }
+            }
+        } finally {
+            if (inputStream != null) {
+                inputStream.close()
+            }
+        }
+    }
+
+    compileOnly files('.cache/supermobcoins.jar')
+}
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {

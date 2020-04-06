@@ -1,9 +1,14 @@
-##################
-# XP Permissions #
-##################
-
-Multipliers:
+##########################
+# Permission Multipliers #
+##########################
+EnableXPMultipliers: true
+XPMultipliers:
   ex:
     Multiplier: 1.5
     Permission: xpmultiplier.1.5
-    Priority: 10
+
+EnableSuperMobCoinMultipliers: true
+SuperMobCoinMultipliers:
+  ex:
+    Multiplier: 1.5
+    Permission: mobcoinmultiplier.1.5

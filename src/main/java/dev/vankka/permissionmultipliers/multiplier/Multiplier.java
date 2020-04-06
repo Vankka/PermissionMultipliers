@@ -1,15 +1,13 @@
-package dev.vankka.xpmultipliers;
+package dev.vankka.permissionmultipliers.multiplier;
 
-public class XPMultiplier {
+public class Multiplier {
 
     private final double multiplier;
     private final String permission;
-    private final int priority;
 
-    public XPMultiplier(final double multiplier, final String permission, final int priority) {
+    public Multiplier(final double multiplier, final String permission) {
         this.multiplier = multiplier;
         this.permission = permission;
-        this.priority = priority;
     }
 
     public double getMultiplier() {
@@ -18,9 +16,5 @@ public class XPMultiplier {
 
     public String getPermission() {
         return permission;
-    }
-
-    public int getPriority() {
-        return priority;
     }
 }
