@@ -22,7 +22,7 @@ import java.nio.file.Files
 apply plugin: 'java'
 
 group = 'dev.vankka'
-version = '1.0'
+version = '1.1'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -75,6 +75,6 @@ dependencies {
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
-        filter ReplaceTokens, tokens: [version: version]
+        filter ReplaceTokens, tokens: [VERSION: version]
     }
 }

@@ -50,7 +50,8 @@ public class XPListener implements Listener {
                         continue;
                     }
 
-                    if (onlinePlayer.hasPermission(current.getPermission())) {
+                    String permission = current.getPermission();
+                    if (onlinePlayer.isPermissionSet(permission) && onlinePlayer.hasPermission(permission)) {
                         multiplier = current;
                     }
                 }

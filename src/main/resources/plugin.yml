@@ -1,5 +1,5 @@
 name: PermissionMultipliers
-version: @version@
+version: @VERSION@
 main: dev.vankka.permissionmultipliers.PermissionMultipliers
 api-version: "1.13"
 authors: [Vankka]
