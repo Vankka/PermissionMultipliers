@@ -34,7 +34,7 @@ import java.util.UUID;
 public class SuperMobCoinListener implements Listener {
 
     private final PermissionMultipliers plugin;
-    private Map<UUID, Double> activeMultipliers = new HashMap<>();
+    private final Map<UUID, Double> activeMultipliers = new HashMap<>();
 
     public SuperMobCoinListener(PermissionMultipliers plugin) {
         this.plugin = plugin;
@@ -45,7 +45,7 @@ public class SuperMobCoinListener implements Listener {
 
             for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
                 Multiplier multiplier = null;
-                for (Multiplier current : plugin.getXpMultipliers()) {
+                for (Multiplier current : plugin.getSuperMobCoinMultipliers()) {
                     if (multiplier != null && multiplier.getMultiplier() >= current.getMultiplier()) {
                         continue;
                     }
